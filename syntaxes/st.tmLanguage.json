@@ -790,7 +790,7 @@
 			]
 		},
 		"strings_sq": {
-			"name": "string.single.double.st",
+			"name": "string.quoted.single.st",
 			"begin": "'",
 			"end": "'",
 			"patterns": [

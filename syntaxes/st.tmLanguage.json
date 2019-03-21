@@ -633,15 +633,15 @@
 				},
 				{
 					"name": "variable.other.object.st",
-					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.)"
+					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.(?!\\.))"
 				},
 				{
 					"name": "variable.other.object.property.st",
-					"match": "(?<=\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.)"
+					"match": "(?<=\\.)(?<!\\.\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.(?!\\.))"
 				},
 				{
 					"name": "variable.other.property.st",
-					"match": "(?<=\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
+					"match": "(?<=\\.)(?<!\\.\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
 				},
 				{
 					"name": "variable.other.readwrite.st",

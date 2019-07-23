@@ -17,9 +17,9 @@ END_VAR
 
 FUNCTION QUINE_DEVICES : BOOL
     VAR_INPUT
-        ENABLE        : BOOL;                   
-        NUMBER_DEVICES: USINT;                    
-        POWER_REQUEST : USINT;                   
+        ENABLE        : BOOL;
+        NUMBER_DEVICES: USINT;
+        POWER_REQUEST : USINT;
     END_VAR
 
     VAR
@@ -29,29 +29,29 @@ FUNCTION QUINE_DEVICES : BOOL
     END_VAR
 
     (* If not enabled, sett all devices to turn off and quite function *)
-    IF NOT ENABLE THEN 
+    IF NOT ENABLE THEN
         FOR usiCount TO _DEVICE_NUM DO
             garDevices[usiCount].Queue := FALSE;
         END_FOR;
-        
+
         RETURN;
-    END_IF;                              
+    END_IF;
 
     (* Count how many devices is on alreadty*)
-    usiCountOnDevices := 0;                                
+    usiCountOnDevices := 0;
     FOR usiCount := 1 TO 6 DO
         IF garDevices[usiCount].State THEN
             usiCountOnDevices := usiCountOnDevices + 1;
         END_IF;
     END_FOR;
 
-    (* Find difference between power request and power on. 
+    (* Find difference between power request and power on.
     Might be negative or positive *)
-    iDeviceOnOff := POWER_REQUEST - usiCountOnDevices; 
-    
+    iDeviceOnOff := POWER_REQUEST - usiCountOnDevices;
+
     FOR usiCount := 1 TO 6 DO
-        (* If device is not available for turning on or off 
-        continue to the other device *)
+        (* If device is not available for turning on or off
+        CONTINUE to the other device *)
         IF NOT garDevices[usiCount].Avalible THEN
             CONTINUE;
         END_IF;

@@ -8,7 +8,7 @@ PROGRAM PLC_PRG
         rTest: REAL := 12.3e4; (* dsfsfsdfs sd fsdf  *)
         iTest: INT  := 1234;
         bTest: BYTE := 2#0010_0110;
-        tTest: TIME := T#20s; 
+        tTest: TIME := T#20s;
         dtTest: DT := DT#2018-12-12-00:00:00;
         pTest: POINTER TO BOOL;
         aTest: ARRAY[1..2] OF strName;
@@ -32,7 +32,7 @@ PROGRAM PLC_PRG
         UPPER();
         SEL();
     END_WHILE;
-    
+
     CASE iTest OF
         CTU.OUT();
         TON.Q.T_EST();
@@ -50,11 +50,11 @@ TYPE
         xother AT %IX0.0.1 : BOOL;
         some: ARRAY[0..9] OF BOOL := [TRUE, FALSE, TRUE, TRUE];
     END_STRUCT
-END_TYPE 
+END_TYPE
 
 FUNCTION sdfdf : BOOL
 
-    
+
 END_FUNCTION
 
 FUNCTION_BLOCK RTE
@@ -64,5 +64,5 @@ FUNCTION_BLOCK RTE
 END_FUNCTION_BLOCK
 
 PROGRAM MyProgram
-    
+
 END_PROGRAM

@@ -10,7 +10,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             let doc = document.getText();
             let m;
 
-            let regex = /^(?<=\s*)\bprogram\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)end_program$/img;
+            let regex = /^(?<=\s*)\bprogram\s*\b([a-z_][a-z0-9_]*)\b([\s\S]*?)\bend_program\b/img;
             while ((m = regex.exec(doc)) !== null) {
                 let range = this.getRange(doc, m[0]);
                 let item = new vscode.DocumentSymbol(
@@ -39,7 +39,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 symbols.push(item);
             }
             
-            regex = /^(?<=\s*)\bfunction_block\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)end_function_block$/img;
+            regex = /(?:^|\b)function_block\s+(?:\(\*[\s\S]*?\*\)\s*)*([a-z_][a-z0-9_]*)\b([\s\S]*?)\bend_function_block\b/img;
             while ((m = regex.exec(doc)) !== null) {
                 let range = this.getRange(doc, m[0]);
                 let item = new vscode.DocumentSymbol(
@@ -68,7 +68,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 symbols.push(item);
             }
 
-            regex = /^(?<=\s*)\bfunction\s*\b([a-zA-Z0-9_]*)\b\s*:\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)end_function$/img;
+            regex = /^(?<=\s*)\bfunction\s*\b([a-z_][a-z0-9_]*)\b\s*:\s*\b([a-z_][a-z0-9_]*)\b([\s\S]*?)\bend_function\b/img;
             while ((m = regex.exec(doc)) !== null) {
                 let range = this.getRange(doc, m[0]);
                 let item = new vscode.DocumentSymbol(

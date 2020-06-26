@@ -288,7 +288,7 @@
 		"type_declaration": {
 			"patterns": [
 				{
-					"comment": "in look behind, '\\WX|^X' is equivelent to '\\bX' that cannot be used in look behinds",
+					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?<=\\WEXTENDS|^EXTENDS)\\b",
 					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
@@ -318,7 +318,7 @@
 					]
 				},
 				{
-					"comment": "in look behind, '\\WX|^X' is equivelent to '\\bX' that cannot be used in look behinds",
+					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?<=\\WIMPLEMENTS|^IMPLEMENTS)\\b",
 					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
@@ -352,7 +352,7 @@
 					]
 				},
 				{
-					"comment": "in look behind, '\\WX|^X' is equivelent to '\\bX' that cannot be used in look behinds",
+					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?=\\bOF\\b|:(?!=))",
 					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
 					"applyEndPatternLast": true,

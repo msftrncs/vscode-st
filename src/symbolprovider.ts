@@ -161,7 +161,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         let symbols: vscode.DocumentSymbol[] = [];
         let lines = text.split('\n');
         lines.forEach((line, key) => {
-            let variables = line.match(/\b([a-zA-Z0-9_]*)\b\s*(.*)?\s*:\s*\b([a-zA-Z0-9_]*)\b([\s\S]*);\s*(\(\*(.*)\*\))?/);
+            let variables = line.match(/\b([a-zA-Z0-9_]*)\b([^:]*):\s*([a-zA-Z0-9_]*)\b([^;]*);\s*(\(\*(.*)\*\))?/);
             if(variables !== null) {
                 let range = this.getRange(key + ln);
                 if(variables !== null && variables.length > 1) {

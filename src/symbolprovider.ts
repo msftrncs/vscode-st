@@ -20,26 +20,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
                     
-                let var_local = this.getVar('VAR', m[0], doc, ln, 'Local variables');
-                if (var_local !== null) {
-                    item.children.push(var_local);
-                }
-                let var_temp = this.getVar('VAR_TEMP', m[0], doc, ln, 'Local variables');
-                if (var_temp !== null) {
-                    item.children.push(var_temp);
-                }
-                let var_input = this.getVar('VAR_INPUT', m[0], doc, ln, 'Input variables');
-                if (var_input !== null) {
-                    item.children.push(var_input);
-                }
-                let var_output = this.getVar('VAR_OUTPUT', m[0], doc, ln, 'Output variables');
-                if (var_output !== null) {
-                    item.children.push(var_output);
-                }
-                let var_in_out = this.getVar('VAR_IN_OUT', m[0], doc, ln, 'Through variables');
-                if (var_in_out !== null) {
-                    item.children.push(var_in_out);
-                }
+                item = this.getPouSymbols( item, m[0], doc, ln );
                 
                 symbols.push(item);
             }
@@ -107,26 +88,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
                     
-                let var_local = this.getVar('VAR', m[0], doc, ln, 'Local variables');
-                if (var_local !== null) {
-                    item.children.push(var_local);
-                }
-                let var_temp = this.getVar('VAR_TEMP', m[0], doc, ln, 'Local variables');
-                if (var_temp !== null) {
-                    item.children.push(var_temp);
-                }
-                let var_input = this.getVar('VAR_INPUT', m[0], doc, ln, 'Input variables');
-                if (var_input !== null) {
-                    item.children.push(var_input);
-                }
-                let var_output = this.getVar('VAR_OUTPUT', m[0], doc, ln, 'Output variables');
-                if (var_output !== null) {
-                    item.children.push(var_output);
-                }
-                let var_in_out = this.getVar('VAR_IN_OUT', m[0], doc, ln, 'Through variables');
-                if (var_in_out !== null) {
-                    item.children.push(var_in_out);
-                }
+                item = this.getPouSymbols( item, m[0], doc, ln );
                 
                 symbols.push(item);
             }
@@ -141,26 +103,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
                     
-                let var_local = this.getVar('VAR', m[0], doc, ln, 'Local variables');
-                if (var_local !== null) {
-                    item.children.push(var_local);
-                }
-                let var_temp = this.getVar('VAR_TEMP', m[0], doc, ln, 'Local variables');
-                if (var_temp !== null) {
-                    item.children.push(var_temp);
-                }
-                let var_input = this.getVar('VAR_INPUT', m[0], doc, ln, 'Input variables');
-                if (var_input !== null) {
-                    item.children.push(var_input);
-                }
-                let var_output = this.getVar('VAR_OUTPUT', m[0], doc, ln, 'Output variables');
-                if (var_output !== null) {
-                    item.children.push(var_output);
-                }
-                let var_in_out = this.getVar('VAR_IN_OUT', m[0], doc, ln, 'Through variables');
-                if (var_in_out !== null) {
-                    item.children.push(var_in_out);
-                }
+                item = this.getPouSymbols( item, m[0], doc, ln );
                 
                 symbols.push(item);
             }
@@ -169,6 +112,31 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         });
     }
             
+    private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol | null {
+        let var_local = this.getVar('VAR', scope, doc, ln, 'Local variables');
+        if (var_local !== null) {
+            symbols.children.push(var_local);
+        }
+        let var_temp = this.getVar('VAR_TEMP', scope, doc, ln, 'Local variables');
+        if (var_temp !== null) {
+            symbols.children.push(var_temp);
+        }
+        let var_input = this.getVar('VAR_INPUT', scope, doc, ln, 'Input variables');
+        if (var_input !== null) {
+            symbols.children.push(var_input);
+        }
+        let var_output = this.getVar('VAR_OUTPUT', scope, doc, ln, 'Output variables');
+        if (var_output !== null) {
+            symbols.children.push(var_output);
+        }
+        let var_in_out = this.getVar('VAR_IN_OUT', scope, doc, ln, 'Through variables');
+        if (var_in_out !== null) {
+            symbols.children.push(var_in_out);
+        }
+
+        return symbols;
+    }
+
     private getVar(vars:string, scope: string, doc: string, ln: number, description: string): vscode.DocumentSymbol | null {
         let symbols: vscode.DocumentSymbol[] = [];
         let regex = new RegExp('\\b' + vars + "\\b([\\s\\S]*?)end_var\\b","img");

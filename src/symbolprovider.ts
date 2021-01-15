@@ -16,7 +16,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 let range = this.getRange(ln);
                 let item = new vscode.DocumentSymbol(
                     m[1], 'Program',
-                    vscode.SymbolKind.Constructor,
+                    vscode.SymbolKind.Module,
                     range, range
                 );
                     
@@ -84,7 +84,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 let range = this.getRange(ln);
                 let item = new vscode.DocumentSymbol(
                     m[1], 'Function block',
-                    vscode.SymbolKind.Module,
+                    vscode.SymbolKind.Class,
                     range, range
                 );
                     

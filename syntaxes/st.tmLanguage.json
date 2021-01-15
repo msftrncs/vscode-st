@@ -213,7 +213,7 @@
 								}
 							},
 							"begin": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b",
-							"end": "(?<=END_TYPE)",
+							"end": "(?<=END_(?:TYPE|STRUCT|UNION)|;)",
 							"patterns": [
 								{
 									"include": "#type_declaration"

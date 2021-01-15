@@ -27,7 +27,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
             regex = /\btype\b([\s\S]*?)\bend_type\b/img;
             while ((m = regex.exec(doc)) !== null) {
-                let rgx_struct = /\b([a-zA-Z0-9_]*)\b\s*:\s*struct([\s\S]*?)end_struct/img;
+                let rgx_struct = /\b([a-zA-Z0-9_]*)\b\s*:\s*(?:(struct|union)\b([\s\S]*?)\bend_\2\b|([a-zA-Z0-9_]*)\b([\s\S]*?);)/img;
                 let ms : RegExpExecArray | null;
                 while ((ms = rgx_struct.exec(m[0])) !== null) {
                     let ln = this.getLineNum(doc, ms[0]);

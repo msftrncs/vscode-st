@@ -112,7 +112,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         });
     }
             
-    private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol | null {
+    private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol {
         let var_local = this.getVar('VAR', scope, doc, ln, 'Local variables');
         if (var_local !== null) {
             symbols.children.push(var_local);

@@ -2,6 +2,38 @@
 import * as vscode from 'vscode';
 
 export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+    /*
+        Consider rewriting this entire symbolprovider to use a recursive symbol extraction method.
+        While not all symbol types will be found burried within any given symbol, using a generic recursive aproach
+        will yield the most effective capture of symbols.
+
+        Start           | End
+        ----------------|----
+        PROGRAM             | END_\1
+        FUNCTION(?:_BLOCK)?  | END_\1
+        ACTION              | END_\1
+        VAR(?=_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))? | END_\1
+        TYPE            | END_\1
+        STRUCT          | END_\1
+        UNION           | END_\1
+
+        While looking for the above groups, it is important to not allow the search in certain text,
+        Quoted strings "(?:[^"]|"")*"|'(?:[^']|'')*'
+        Commented lines //[^\n]*\n */
+//      Comment blocks  \(\*(?:.(?!/*\)))*\*\)|(\/\*(?:.(?!\*\/))*\*\/ 
+    /**/
+
+//    regex = /(?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\b((PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=VAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?)\bEND_\2\b/;
+/*
+        There is a limitation here.  Any given element cannot be nested within a element of the same type becuse they have matching end markers.
+
+        Technically very few elements should be nested within each other anyway:
+
+            VAR_x is nexted in PROGRAM/FUNCTION(_BLOCK), but not in VAR_x
+            STRUCT/UNION is nested in TYPE, but not recursively, and mutually exclusive
+            PROGRAM/FUCTION(_BLOCK) are mutually exclusive and should not be nested in any other element
+            ACTION may be nested
+*/
 
     public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.DocumentSymbol[]> {
         return new Promise((resolve, reject) => {
@@ -24,8 +56,8 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                 
                 symbols.push(item);
             }
-
-            regex = /\btype\b([\s\S]*?)\bend_type\b/img;
+//      |"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\/\*[\s\S]*?\*\/|\(\*[\s\S]*?\*\)
+            regex = /^(?:(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\btype\b([\s\S]*?)\bend_type\b/i;
             while ((m = regex.exec(doc)) !== null) {
                 let rgx_struct = /\b([a-zA-Z0-9_]*)\b\s*:\s*(?:(struct|union)\b([\s\S]*?)\bend_\2\b|([a-zA-Z0-9_]*)\b([\s\S]*?);)/img;
                 let ms : RegExpExecArray | null;
@@ -112,7 +144,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         });
     }
             
-    private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol | null {
+    private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol {
         let var_local = this.getVar('VAR', scope, doc, ln, 'Local variables');
         if (var_local !== null) {
             symbols.children.push(var_local);

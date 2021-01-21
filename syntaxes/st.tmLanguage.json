@@ -279,6 +279,10 @@
 							"include": "#keywords"
 						},
 						{
+							"name": "punctuation.separator.st",
+							"match": ":(?!=)"
+						},
+						{
 							"include": "$self"
 						}
 					]
@@ -295,7 +299,7 @@
 					"patterns": [
 						{
 							"begin": "\\G(?!\\b(?=(?:END_)?TYPE|STRUCT|UNION)\\b|(?=:=|;))",
-							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
+							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
 							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
@@ -309,11 +313,17 @@
 							"patterns": [
 								{
 									"include": "#comments"
+								},
+								{
+									"include": "#meta"
 								}
 							]
 						},
 						{
 							"include": "#comments"
+						},
+						{
+							"include": "#meta"
 						}
 					]
 				},
@@ -325,7 +335,7 @@
 					"patterns": [
 						{
 							"begin": "(?=\\G|,)(?!\\b(?=(?:END_)?TYPE|STRUCT|UNION)\\b|(?=:=|;))",
-							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
+							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
 							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
@@ -343,18 +353,24 @@
 								{
 									"name": "punctuation.separator.st",
 									"match": ","
+								},
+								{
+									"include": "#meta"
 								}
 							]
 						},
 						{
 							"include": "#comments"
+						},
+						{
+							"include": "#meta"
 						}
 					]
 				},
 				{
 					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?=\\bOF\\b|:(?!=))",
-					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
+					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
 					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {
@@ -368,7 +384,7 @@
 					"patterns": [
 						{
 							"name": "keyword.other.st",
-							"match": "\\b(?:OF|TO|POINTER|REF(?:ERENCE)?|REF_TO)\\b"
+							"match": "\\b(?:OF|TO|POINTER|REF(?:ERENCE|_TO)?)\\b"
 						},
 						{
 							"name": "punctuation.separator.st",
@@ -656,10 +672,6 @@
 				{
 					"name": "variable.other.readwrite.st",
 					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
-				},
-				{
-					"name": "entity.name.type.st",
-					"match": ":\\s*[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
 				}
 			]
 		},

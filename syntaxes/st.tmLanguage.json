@@ -256,7 +256,7 @@
 						}
 					},
 					"begin": "\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)\\b",
-					"end": "(?<=END_VAR|END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY)",
+					"end": "(?<=END_VAR|END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY)|\\b(?=(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)|PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|METHOD|ACTION|PROPERTY)\\b",
 					"name": "meta.declaration.st",
 					"patterns": [
 						{
@@ -299,7 +299,7 @@
 					"patterns": [
 						{
 							"begin": "\\G(?!\\b(?=(?:END_)?TYPE|STRUCT|UNION)\\b|(?=:=|;))",
-							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
+							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S|(?:\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)|PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|METHOD|ACTION|PROPERTY)\\b)",
 							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
@@ -335,7 +335,7 @@
 					"patterns": [
 						{
 							"begin": "(?=\\G|,)(?!\\b(?=(?:END_)?TYPE|STRUCT|UNION)\\b|(?=:=|;))",
-							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
+							"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S|(?:\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)|PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|METHOD|ACTION|PROPERTY)\\b)",
 							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
@@ -370,7 +370,7 @@
 				{
 					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?=\\bOF\\b|:(?!=))",
-					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S)",
+					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=\\S|(?:\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)|PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|METHOD|ACTION|PROPERTY)\\b)",
 					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {

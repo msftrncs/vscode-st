@@ -20,20 +20,20 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         While looking for the above groups, it is important to not allow the search in certain text,
         Quoted strings "(?:[^"]|"")*"|'(?:[^']|'')*'
         Commented lines //[^\n]*\n */
-//      Comment blocks  \(\*(?:.(?!/*\)))*\*\)|(\/\*(?:.(?!\*\/))*\*\/ 
-    /**/
+    //      Comment blocks  \(\*(?:.(?!/*\)))*\*\)|(\/\*(?:.(?!\*\/))*\*\/ 
+    /* (?:(["'])(?:\1\1|[\\s\\S])*?(?:\1(?!\1)|$)|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\b(TEST)\b*/
 
-//    regex = /(?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\b((PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=VAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?)\bEND_\2\b/;
-/*
-        There is a limitation here.  Any given element cannot be nested within a element of the same type becuse they have matching end markers.
-
-        Technically very few elements should be nested within each other anyway:
-
-            VAR_x is nexted in PROGRAM/FUNCTION(_BLOCK), but not in VAR_x
-            STRUCT/UNION is nested in TYPE, but not recursively, and mutually exclusive
-            PROGRAM/FUCTION(_BLOCK) are mutually exclusive and should not be nested in any other element
-            ACTION may be nested
-*/
+    //    regex = /(?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\b((PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=VAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?)\bEND_\2\b/;
+    /*
+            There is a limitation here.  Any given element cannot be nested within a element of the same type becuse they have matching end markers.
+    
+            Technically very few elements should be nested within each other anyway:
+    
+                VAR_x is nexted in PROGRAM/FUNCTION(_BLOCK), but not in VAR_x
+                STRUCT/UNION is nested in TYPE, but not recursively, and mutually exclusive
+                PROGRAM/FUCTION(_BLOCK) are mutually exclusive and should not be nested in any other element
+                ACTION may be nested
+    */
 
     public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.DocumentSymbol[]> {
         return new Promise((resolve, reject) => {
@@ -51,21 +51,24 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     vscode.SymbolKind.Module,
                     range, range
                 );
-                    
-                item = this.getPouSymbols( item, m[0], doc, ln );
-                
+
+                item = this.getPouSymbols(item, m[0], doc, ln);
+
                 symbols.push(item);
             }
-//      |"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\/\*[\s\S]*?\*\/|\(\*[\s\S]*?\*\)
-            regex = /^(?:(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\btype\b([\s\S]*?)\bend_type\b/i;
+            //      |"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\/\*[\s\S]*?\*\/|\(\*[\s\S]*?\*\)
+            //(?:"(?:[^"]|"")*"|'(?:[^']|'')*'|\/\/.*(?:\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?
+            //`(?<!\\\\(?:\\\\{2})*)["']{1}[^"'\\\\]*(?:\\\\[\\s\\S][^\\\\"']*)*["']{1}|\\(\\*[\\s\\S]*?\\*\\)|\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\n]*\\n`
+            //(?:\/\/.*(?:\n|$)|(["'])(?:(?!\1)(?:\$\1|[\s\S]))*(?:\1|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?/
+            regex = /(?!$)(?:\/\/.*(?:\n|$)|(["'])(?:(?!\1)(?:\$\1|[\s\S]))*(?:\1|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:\btype\b((?:\/\/.*(?:\n|$)|(["'])(?:(?!\3)(?:\$\3|[\s\S]))*(?:\3|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:\bend_type\b|$)|$)/ig;
             while ((m = regex.exec(doc)) !== null) {
                 let rgx_struct = /\b([a-zA-Z0-9_]*)\b\s*:\s*(?:(struct|union)\b([\s\S]*?)\bend_\2\b|([a-zA-Z0-9_]*)\b([\s\S]*?);)/img;
-                let ms : RegExpExecArray | null;
-                while ((ms = rgx_struct.exec(m[0])) !== null) {
+                let ms: RegExpExecArray | null;
+                while ((ms = rgx_struct.exec(m[2])) !== null) {
                     let ln = this.getLineNum(doc, ms[0]);
                     let range = this.getRange(ln);
                     let item = new vscode.DocumentSymbol(
-                        ms[1], 'Structure',
+                        ms[1], ms[2], //'Structure',
                         vscode.SymbolKind.Struct,
                         range, range
                     );
@@ -75,9 +78,9 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     }
                     symbols.push(item);
                 }
-                
-                let rgx_enum = /\b([a-zA-Z0-9_]*)\b\s*:\s*\(([\s\S]*?)\)\s*;/img;
-                while ((ms = rgx_enum.exec(m[0])) !== null) {
+
+                let rgx_enum = /\b([a-zA-Z0-9_]*)\b\s*:\s*\(([\s\S]*?)\)[\s\S]*?;/img;
+                while ((ms = rgx_enum.exec(m[2])) !== null) {
                     let ln = this.getLineNum(doc, ms[0]);
                     let range = this.getRange(ln);
                     let item = new vscode.DocumentSymbol(
@@ -96,7 +99,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                         if (emm !== null) {
                             let en_ln = this.getLineNum(contx, element);
                             let range = this.getRange(ln + (en_ln > 0 ? en_ln + 1 : en_ln));
-                                let e = new vscode.DocumentSymbol(
+                            let e = new vscode.DocumentSymbol(
                                 emm[1], 'Enumerator',
                                 vscode.SymbolKind.Variable,
                                 range, range
@@ -107,9 +110,9 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
                     symbols.push(item);
                 }
-                
+
             }
-           
+
             regex = /\bfunction_block\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)\bend_function_block\b/img;
             while ((m = regex.exec(doc)) !== null) {
                 let ln = this.getLineNum(doc, m[0]);
@@ -119,9 +122,9 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     vscode.SymbolKind.Class,
                     range, range
                 );
-                    
-                item = this.getPouSymbols( item, m[0], doc, ln );
-                
+
+                item = this.getPouSymbols(item, m[0], doc, ln);
+
                 symbols.push(item);
             }
 
@@ -134,16 +137,16 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     vscode.SymbolKind.Function,
                     range, range
                 );
-                    
-                item = this.getPouSymbols( item, m[0], doc, ln );
-                
+
+                item = this.getPouSymbols(item, m[0], doc, ln);
+
                 symbols.push(item);
             }
-                
+
             resolve(symbols);
         });
     }
-            
+
     private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol {
         let var_local = this.getVar('VAR', scope, doc, ln, 'Local variables');
         if (var_local !== null) {
@@ -169,40 +172,40 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         return symbols;
     }
 
-    private getVar(vars:string, scope: string, doc: string, ln: number, description: string): vscode.DocumentSymbol | null {
+    private getVar(vars: string, scope: string, doc: string, ln: number, description: string): vscode.DocumentSymbol | null {
         let symbols: vscode.DocumentSymbol[] = [];
-        let regex = new RegExp('\\b' + vars + "\\b([\\s\\S]*?)end_var\\b","img");
+        let regex = new RegExp('\\b' + vars + "\\b([\\s\\S]*?)end_var\\b", "img");
         let m = scope.match(regex);
         if (m !== null) {
             let ln2 = this.getLineNum(scope, m[0]);
             symbols = this.listVariables(m[0], ln + ln2);
 
-            if(symbols.length > 0 ) {
+            if (symbols.length > 0) {
                 let range = this.getRange(this.getLineNum(doc, m[0]));
                 let child = new vscode.DocumentSymbol(vars, description, vscode.SymbolKind.Constructor, range, range);
                 child.children = symbols;
                 return child;
             }
-    
+
         }
-      
+
         return null;
     }
 
-    private listVariables(text: string, ln: number) : vscode.DocumentSymbol[] {
+    private listVariables(text: string, ln: number): vscode.DocumentSymbol[] {
         let symbols: vscode.DocumentSymbol[] = [];
         let lines = text.split('\n');
         lines.forEach((line, key) => {
             let variables = line.match(/\b([a-zA-Z0-9_]*)\b([^:]*):\s*([a-zA-Z0-9_]*)\b([^;]*);\s*(\(\*(.*)\*\))?/);
-            if(variables !== null) {
+            if (variables !== null) {
                 let range = this.getRange(key + ln);
-                if(variables !== null && variables.length > 1) {
+                if (variables !== null && variables.length > 1) {
                     let item = new vscode.DocumentSymbol(
                         variables[1] + ' (' + variables[3] + ') ' + (variables[2] !== undefined ? variables[2] : ''), variables[6] || 'Variable',
                         vscode.SymbolKind.Variable,
                         range, range
                     );
-                        
+
                     symbols.push(item);
                 }
             }
@@ -210,7 +213,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         return symbols;
     }
 
-    private getLineNum(text: string, substring: string) : number {
+    private getLineNum(text: string, substring: string): number {
         var index = text.indexOf(substring);
         var tempString = text.substring(0, index);
         return tempString.split('\n').length - 1;

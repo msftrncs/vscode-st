@@ -268,16 +268,20 @@
 					]
 				},
 				{
-					"begin": "(?=\\bCASE\\b)",
-					"end": "(?<=END_CASE|END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY|END_ACTION)",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control.case.st"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "keyword.control.case.end.st"
+						}
+					},
+					"begin": "\\bCASE\\b",
+					"end": "\\bEND_CASE\\b|(?<=END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY|END_ACTION)",
 					"name": "meta.switch.st",
 					"patterns": [
-						{
-							"include": "#comments"
-						},
-						{
-							"include": "#keywords"
-						},
 						{
 							"name": "punctuation.separator.st",
 							"match": ":(?!=)"

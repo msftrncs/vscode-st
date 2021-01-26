@@ -167,6 +167,41 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
             resolve(symbols);
         });
+
+/*        function getPouRecurse(text: string, offset: number) {
+            let rgx_pou = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b((PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|ACTION|METHOD|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=\bVAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\bEND_\4\b|\b(?=(?:END_)?(?:PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE))\b))/ig;
+            let pous: RegExpExecArray | null;
+            while ((pous = rgx_pou.exec(text)) !== null) {
+                let content_offset = pous.index + pous[1].length + (pous[3] === undefined? 0 : pous[3].length);
+                let pou_start_pos = document.positionAt(pous.index + pous[1].length);
+                let pou_reveal_range = new vscode.Range(pou_start_pos, document.positionAt(content_offset));
+                let pou_full_range = new vscode.Range(pou_start_pos, document.positionAt(content_offset + pous[0].length));
+
+                /* Depending on the type of pou, we may or we may not define a symbol:
+
+                    POU             vscode      recurse
+                    Keyword         type        type
+                    --------------------------------------------------
+                    PROGRAM         Module      POU
+                    FUNCTION_BLOCK  Class       POU
+                    FUNCTION        Function    POU
+                    INTERFACE       Interface   POU
+                    METHOD          Method      POU
+                    ACTION          Event??     none
+                    TYPE            none        TYPE
+                    VAR(_x)?        Variable    VAR
+
+                    STRUCT and UNION and enumerations resolve in TYPE recurse.
+                    VAR recurse might need to resolve STRUCT and UNION.
+                    POU recurse must determine the symbol name
+
+                    rgx_pou_name = /(?!$)((?:(?:\b(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)\b)?(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)*)(?:$|\b(?=(?:END_)?(?:ACTION|METHOD|TYPE|STRUCT|UNION|(?<=END_)VAR|(?<!END)VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?)\b|([a-zA-Z0-9_]+)\b))/
+
+                    capture 3 provides the pou name.  Length of capture 1 and capture 3 offset the text sent to the recurse, as there is no reason to recurse this part.
+                *//*
+
+            }
+        }*/
     }
 
     private getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol {
@@ -204,7 +239,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
             if (symbols.length > 0) {
                 let range = this.getRange(this.getLineNum(doc, m[0]));
-                let child = new vscode.DocumentSymbol(vars, description, vscode.SymbolKind.Constructor, range, range);
+                let child = new vscode.DocumentSymbol(vars, description, vscode.SymbolKind.Variable, range, range);
                 child.children = symbols;
                 return child;
             }

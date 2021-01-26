@@ -156,7 +156,7 @@
 						}
 					},
 					"begin": "\\b(FUNCTION|METHOD|PROPERTY)\\b",
-					"end": "(?<=END_\\1|END_INTERFACE|END_FUNCTION_BLOCK|END_PROGRAM)",
+					"end": "(?<=\\bEND_\\1)|\\b(?!END_\\1\\b)(?=END_(?:PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|METHOD|PROPERTY|INTERFACE)\\b)|\\b(?=PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|METHOD|PROPERTY|INTERFACE|IMPLEMENTATION|LIBRARY|CONFIGURATION|TYPE)\\b",
 					"name": "meta.function.st",
 					"patterns": [
 						{
@@ -172,7 +172,7 @@
 								}
 							},
 							"begin": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b",
-							"end": "(?<=END_PROGRAM|END_FUNCTION|END_ACTION|END_METHOD|END_PROPERTY|END_INTERFACE|END_FUNCTION_BLOCK)",
+							"end": "(?=\\b(?:END_(?:PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|METHOD|PROPERTY|INTERFACE)|PROGRAM|FUNCTION(?:_BLOCK)?|ACTION|METHOD|PROPERTY|INTERFACE|IMPLEMENTATION|LIBRARY|CONFIGURATION|TYPE))\\b",
 							"patterns": [
 								{
 									"include": "#type_declaration"
@@ -197,7 +197,7 @@
 						}
 					},
 					"begin": "\\b(TYPE)\\b",
-					"end": "(?<=END_\\1)",
+					"end": "(?<=\\bEND_\\1)",
 					"name": "meta.type.st",
 					"patterns": [
 						{
@@ -213,7 +213,7 @@
 								}
 							},
 							"begin": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b",
-							"end": "(?<=END_(?:TYPE|STRUCT|UNION)|;)",
+							"end": "(?<=\\bEND_(?:TYPE|STRUCT|UNION)|;)",
 							"patterns": [
 								{
 									"include": "#type_declaration"
@@ -238,7 +238,7 @@
 						}
 					},
 					"begin": "\\b(STRUCT|UNION)\\b",
-					"end": "(?<=END_\\1|END_TYPE)",
+					"end": "(?<=\\bEND_\\1)|(?=\\bEND_TYPE\\b)",
 					"name": "meta.struct.st",
 					"patterns": [
 						{
@@ -250,14 +250,15 @@
 					]
 				},
 				{
+					"comment": "VAR_x CANNOT be nested, so lookbehind is used to detect END",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.other.st"
 						}
 					},
 					"begin": "\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)\\b",
-					"end": "(?<=END_VAR|END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY)",
-					"name": "meta.declaration.st",
+					"end": "(?<=\\bEND_VAR)|(?=\\bEND_(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY)|\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?))\\b",
+					"name": "meta.declaration.$0.st",
 					"patterns": [
 						{
 							"include": "#type_declaration"
@@ -288,8 +289,7 @@
 		"type_declaration": {
 			"patterns": [
 				{
-					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
-					"begin": "(?<=\\WEXTENDS|^EXTENDS)\\b",
+					"begin": "(?<=\\bEXTENDS)\\b",
 					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -318,8 +318,7 @@
 					]
 				},
 				{
-					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
-					"begin": "(?<=\\WIMPLEMENTS|^IMPLEMENTS)\\b",
+					"begin": "(?<=\\bIMPLEMENTS)\\b",
 					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -352,7 +351,6 @@
 					]
 				},
 				{
-					"comment": "in look behind, '\\WX|^X' is equivalent to '\\bX' that cannot be used in look behinds",
 					"begin": "(?=\\bOF\\b|:(?!=))",
 					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
 					"applyEndPatternLast": true,
@@ -573,7 +571,7 @@
 				},
 				{
 					"name": "keyword.other.st",
-					"match": "\\b(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|METHOD|PROPERTY)\\b"
+					"match": "\\b(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|IMPLEMENTATION|METHOD|PROPERTY)\\b"
 				},
 				{
 					"captures": {

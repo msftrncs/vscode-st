@@ -35,7 +35,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     //      Comment blocks  \(\*(?:.(?!/*\)))*\*\)|(\/\*(?:.(?!\*\/))*\*\/ 
     /* (?:(["'])(?:\1\1|[\\s\\S])*?(?:\1(?!\1)|$)|'(?:[^']|'')*'|\/\/.*(?:\r?\n|$)|\(\*[\s\S]*?\*\)|\/\*[\s\S]*?\*\/|(?:(?!\(\*|\/\/|\/\*|['"])[\s\S]))*?\b(TEST)\b*/
 
-    //    regex = /(?!$)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\1)(?:\$\1|[\s\S]))*(?:\1|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:$|\b((PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|ACTION|METHOD|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=\bVAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\bEND_\3\b|\b(?=(?:END_)?(?:PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE))\b))/;
+    //    regex = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b((PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE|ACTION|METHOD|TYPE|STRUCT|UNION|VAR(?=\b|_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))(?:\b|(?<=\bVAR)_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG)))\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\bEND_\4\b|\b(?=(?:END_)?(?:PROGRAM|FUNCTION(?:_BLOCK)?|INTERFACE))\b))/;
     /*
             There is a limitation here.  Any given element cannot be nested within a element of the same type becuse they have matching end markers.
     
@@ -76,14 +76,14 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             while ((m = regex.exec(doc)) !== null) {
                 let type_offset = m.index + m[1].length + (m[3] === undefined? 0 : 4);
 
-                let rgx_struct = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|(struct|union)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\9)(?:\$\9|[\s\S]))*(?:\9|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)\bend_\7\b|([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$)|\((?!\*)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\14)(?:\$\14|[\s\S]))*(?:\14|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\15)(?:\$\15|[\s\S]))*(?:\15|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:\b([a-zA-Z0-9_]+)\b(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\17)(?:\$\17|[\s\S]))*(?:\17|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)?(?:;|$))))/ig;
+                let rgx_struct = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|(struct|union)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\9)(?:\$\9|[\s\S]))*(?:\9|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)\bend_\7\b|([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$)|\((?!\*)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\14)(?:\$\14|[\s\S]))*(?:\14|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\15)(?:\$\15|[\s\S]))*(?:\15|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:\b([a-zA-Z0-9_]+)\b(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\17)(?:\$\17|[\s\S]))*(?:\17|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)?(?:;|$))))/ig;
                 /* Captures break-down
                     [1] - header before type name
                     [3] - type name
                     [7] - STRUCT | UNION
                     [8] - struct constructor
-                    [10] - renamed type base type
-                    [11] - renamed type constructor
+                    [10] - synonym type base type
+                    [11] - synonym type constructor
                     [13] - enumeration constructor
                     [16] - enumeration base type expression
                 */
@@ -92,45 +92,44 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     if (ms[3] !== undefined) {
                         let struct_offset = type_offset + ms.index + ms[1].length;
                         let struct_pos = document.positionAt(struct_offset);
-                        let ln = this.getLineNum(doc, ms[13] || ms[8] || ms[11]);
-                        let range = this.getRange(ln);
-                        if (ms[13] === undefined) {
-                            let item = new vscode.DocumentSymbol(
-                                ms[3], ms[7] || ms[10], //'Structure',
-                                vscode.SymbolKind.Struct,
-                                new vscode.Range(struct_pos, document.positionAt(type_offset + ms.index + ms[0].length)), 
-                                new vscode.Range(struct_pos, document.positionAt(struct_offset + ms[3].length)) 
-                            );
-                            let content_offset = struct_offset + ms[3].length + ms[4].length + (ms[7] || ms[10]).length;
-                            let vars = this.listVariablesWithDoc(document, ms[8] || ms[11], content_offset);
-                            if (vars !== null) {
-                                item.children = vars;
+                        let isEnum = ms[13] !== undefined;
+                        let item = new vscode.DocumentSymbol(
+                            (isEnum && ms[16] !== undefined ) ? (ms[3] + " (" + ms[16] + ")") : 
+                                ms[10] !== undefined ? (ms[3] + " (" + ms[10] + ")") : ms[3], 
+                            isEnum ? 'Enumeration' : ((ms[7] === undefined || ms[7].toUpperCase() === 'STRUCT') ? 'Structure' : 'Union'),
+                            isEnum ? vscode.SymbolKind.Enum : vscode.SymbolKind.Struct,
+                            new vscode.Range(struct_pos, document.positionAt(type_offset + ms.index + ms[0].length)), 
+                            new vscode.Range(struct_pos, document.positionAt(struct_offset + ms[3].length)) 
+                        );
+                        if (!isEnum) {
+                            if (ms[8] !== undefined) {
+                                let content_offset = struct_offset + ms[3].length + ms[4].length + ms[7].length;
+                                let vars = this.listVariablesWithDoc(document, ms[8], content_offset);
+                                if (vars !== null) {
+                                    item.children = vars;
+                                }
                             }
-                            symbols.push(item);
                         }
 
                         else  {
-                            let item = new vscode.DocumentSymbol(
-                                ms[3] + (ms[16] === undefined ? "" : (" (" + ms[16] + ")")), 'Enumeration',
-                                vscode.SymbolKind.Enum,
-                                range, range
-                            );
-                            let rgx_enums = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\4)(?:\$\4|[\s\S]))*(?:\4|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:,|$))/ig;
+                            let content_offset = struct_offset + ms[3].length + ms[4].length + 1;
+                            let rgx_enums = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\4)(?:\$\4|[\s\S]))*(?:\4|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:,|$)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*)/ig;
                             let enums: RegExpExecArray | null;
                             while ((enums = rgx_enums.exec(ms[13])) !== null) {
                                 if (enums[3] !== undefined) {
-                                    let en_ln = this.getLineNum(ms[13], enums[3]);
-                                    let range = this.getRange(ln + en_ln);
+                                    let enums_offset = content_offset + enums.index + enums[1].length;
+                                    let enums_pos = document.positionAt(enums_offset);
                                     let e = new vscode.DocumentSymbol(
                                         enums[3], 'Enumerator',
-                                        vscode.SymbolKind.Variable,
-                                        range, range
+                                        vscode.SymbolKind.EnumMember,
+                                        new vscode.Range(enums_pos, document.positionAt(content_offset + enums.index + enums[0].length)), 
+                                        new vscode.Range(enums_pos, document.positionAt(enums_offset + enums[3].length))
                                     );
                                     item.children.push(e);
                                 }
                             };
-                            symbols.push(item);
                         }
+                        symbols.push(item);
                     }
                 }
 
@@ -217,7 +216,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     private listVariables(text: string, ln: number): vscode.DocumentSymbol[] {
         let symbols: vscode.DocumentSymbol[] = [];
-        let rgx_variables = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$))/ig;
+        let rgx_variables = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\10)(?:\$\10|[\s\S]))*(?:\10|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*)/ig;
         let vars: RegExpExecArray | null;
         while((vars = rgx_variables.exec(text)) !== null) {
             if (vars[3] !== undefined) {
@@ -236,7 +235,7 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 
     private listVariablesWithDoc(document: vscode.TextDocument, text: string, offset: number): vscode.DocumentSymbol[] {
         let symbols: vscode.DocumentSymbol[] = [];
-        let rgx_variables = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$))/ig;
+        let rgx_variables = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:$|\b([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\5)(?:\$\5|[\s\S]))*(?:\5|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?:(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\6)(?:\$\6|[\s\S]))*(?:\6|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)([a-zA-Z0-9_]+)\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\12)(?:\$\12|[\s\S]))*(?:\12|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:;|$)(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\10)(?:\$\10|[\s\S]))*(?:\10|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*)/ig;
         let vars: RegExpExecArray | null;
         while((vars = rgx_variables.exec(text)) !== null) {
             if (vars[3] !== undefined) {

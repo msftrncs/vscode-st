@@ -64,21 +64,6 @@
         }
       }
     },
-    "menus": {
-      "editor/context": [
-        {
-          "command": "extension.st.autoformat",
-          "when": "editorLangId == st",
-          "group": "1_modification"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "extension.st.autoformat",
-        "title": "ST: Format"
-      }
-    ],
     "languages": [
       {
         "id": "st",
@@ -91,6 +76,7 @@
           ".st",
           ".stl",
           ".scl",
+          ".exp",
           ".iecplc",
           ".iecst",
           ".iecstl"
@@ -100,9 +86,29 @@
     ],
     "grammars": [
       {
-        "language": "st",
         "scopeName": "source.st",
+        "language": "st",
         "path": "./syntaxes/st.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.iecst.codeblock",
+        "path": "./syntaxes/md.codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.iecstmd": "st"
+        }
+      },
+      {
+        "scopeName": "xml.iecst.codeblock",
+        "path": "./syntaxes/xml.codeblock.json",
+        "injectTo": [
+          "text.xml"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.iecstxml": "st"
+        }
       }
     ],
     "snippets": [
@@ -111,10 +117,5 @@
         "path": "./snippets/st.snippets.json"
       }
     ]
-  },
-  "__metadata": {
-    "id": "3065eeeb-33bb-47cd-8269-53eec8ceb284",
-    "publisherDisplayName": "Sergey Romanov",
-    "publisherId": "f1446b81-739b-40db-adb4-a0332903c3b1"
   }
 }

@@ -1,7 +1,7 @@
 'use strict';
 import * as vscode from 'vscode';
 
-export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     /*
         Consider rewriting this entire symbolprovider to use a recursive symbol extraction method.
         While not all symbol types will be found burried within any given symbol, using a generic recursive aproach
@@ -48,10 +48,10 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     */
 
     public provideDocumentSymbols(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.DocumentSymbol[]> {
+        let doc = document.getText();
         return new Promise((resolve, reject) => {
             let symbols: vscode.DocumentSymbol[] = [];
 
-            let doc = document.getText();
             let m: RegExpExecArray | null;
 
             let regex = /\bprogram\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)\bend_program\b/img;
@@ -64,14 +64,14 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
 
-                symbols.push(getPouSymbols(item, m[0], doc, ln));
+                symbols.push(getPouSymbols(item, m[0], ln));
             }
 
             regex = /(?!$)((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:\btype\b((?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\4)(?:\$\4|[\s\S]))*(?:\4|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)(?:\bend_type\b|$)|$)/ig;
             while ((m = regex.exec(doc)) !== null) {
                 let type_offset = m.index + m[1].length + (m[3] === undefined ? 0 : 4);
                 if (m[3] !== undefined) {
-                    recurseTypes(m[3], type_offset).forEach( (item) => {
+                    recurseTypes(m[3], type_offset).forEach((item) => {
                         symbols.push(item);
                     });
                 }
@@ -87,10 +87,10 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
 
-                symbols.push(getPouSymbols(item, m[0], doc, ln));
+                symbols.push(getPouSymbols(item, m[0], ln));
             }
 
-            regex = /\bfunction\s*\b([a-zA-Z0-9_]*)\b\s*:\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)end_function/img;
+            regex = /\bfunction\s*\b([a-zA-Z0-9_]*)\b\s*:\s*\b([a-zA-Z0-9_]*)\b([\s\S]*?)end_function\b/img;
             while ((m = regex.exec(doc)) !== null) {
                 let ln = getLineNum(doc, m[0]);
                 let range = getRange(ln);
@@ -100,8 +100,15 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     range, range
                 );
 
-                symbols.push(getPouSymbols(item, m[0], doc, ln));
+                symbols.push(getPouSymbols(item, m[3], ln));
             }
+
+            // temporary including VAR_GLOBAL
+            let var_symbols = getVar('VAR_GLOBAL', doc, 0, 'Global variables');
+            if (var_symbols !== null) {
+                symbols.push(var_symbols);
+            }
+
 
             resolve(symbols);
         });
@@ -133,13 +140,13 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                     VAR recurse might need to resolve STRUCT and UNION.
                     POU recurse must determine the symbol name
 
-                    rgx_pou_name = /(?!$)((?:(?:\b(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)\b)?(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?)*)(?:$|\b(?=(?:END_)?(?:ACTION|METHOD|TYPE|STRUCT|UNION|(?<=END_)VAR|(?<!END)VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?)\b|([a-zA-Z0-9_]+)\b))/
+                    rgx_pou_name = /(?!$)((?:(?:\b(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)\b)?(?:\/\/.*(?:\r?\n|$)|(["'])(?:(?!\2)(?:\$\2|[\s\S]))*(?:\2|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s])*?)*)(?:$|\b(?=(?:(?:END_)?(?:ACTION|METHOD|STRUCT|UNION|(?<=END_)VAR|(?<!END)VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?)|EXTENDS|IMPLEMENTS|PROPERTY)\b)|\b([a-zA-Z0-9_]+)\b|(?=\S))/i
 
                     capture 3 provides the pou name.  Length of capture 1 and capture 3 offset the text sent to the recurse, as there is no reason to recurse this part.
                 *//*
 
-            }
-        }*/
+    }
+}*/
 
         function recurseTypes(text: string, offset: number): vscode.DocumentSymbol[] {
             let items: vscode.DocumentSymbol[] = [];
@@ -202,46 +209,42 @@ export class stDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
             return items;
         }
 
-        function getPouSymbols(symbols: vscode.DocumentSymbol, scope: string, doc: string, ln: number): vscode.DocumentSymbol {
-            let var_local = getVar('VAR', scope, doc, ln, 'Local variables');
-            if (var_local !== null) {
-                symbols.children.push(var_local);
-            }
-            let var_temp = getVar('VAR_TEMP', scope, doc, ln, 'Local variables');
-            if (var_temp !== null) {
-                symbols.children.push(var_temp);
-            }
-            let var_input = getVar('VAR_INPUT', scope, doc, ln, 'Input variables');
-            if (var_input !== null) {
-                symbols.children.push(var_input);
-            }
-            let var_output = getVar('VAR_OUTPUT', scope, doc, ln, 'Output variables');
-            if (var_output !== null) {
-                symbols.children.push(var_output);
-            }
-            let var_in_out = getVar('VAR_IN_OUT', scope, doc, ln, 'Through variables');
-            if (var_in_out !== null) {
-                symbols.children.push(var_in_out);
-            }
+        function getPouSymbols(symbol: vscode.DocumentSymbol, scope: string, ln: number): vscode.DocumentSymbol {
+            let varsList: { varKeyword: string, desc: string }[] = [
+                { varKeyword: 'VAR', desc: 'Local variables' },
+                { varKeyword: 'VAR_TEMP', desc: 'Local variables' },
+                { varKeyword: 'VAR_INPUT', desc: 'Input variables' },
+                { varKeyword: 'VAR_OUTPUT', desc: 'Output variables' },
+                { varKeyword: 'VAR_IN_OUT', desc: 'Through variables' },
+                { varKeyword: 'VAR_INST', desc: 'Instance variables' },  // ??
+                { varKeyword: 'VAR_STAT', desc: 'Status variables' },  // ??
+                { varKeyword: 'VAR_ACCESS', desc: 'Access variables' }, // ??
+                { varKeyword: 'VAR_EXTERNAL', desc: 'External variables' }, // ??
+                { varKeyword: 'VAR_CONFIG', desc: 'Configuration variables' }]; // ??
 
-            return symbols;
+            varsList.forEach((vars) => {
+                let var_symbols = getVar(vars.varKeyword, scope, ln, vars.desc);
+                if (var_symbols !== null) {
+                    symbol.children.push(var_symbols);
+                }
+            });
+
+            return symbol;
         }
 
-        function getVar(vars: string, scope: string, doc: string, ln: number, description: string): vscode.DocumentSymbol | null {
-            let symbols: vscode.DocumentSymbol[] = [];
-            let regex = new RegExp('\\b' + vars + "\\b([\\s\\S]*?)end_var\\b", "i");
+        function getVar(vars: string, scope: string, ln: number, description: string): vscode.DocumentSymbol | null {
+            let regex = new RegExp(`(?!$)((?://.*(?:\\r?\\n|$)|(["'])(?:(?!\\2)(?:\\$\\2|[\\s\\S]))*(?:\\2|$)|\\(\\*[\\s\\S]*?(?:\\*\\)|$)|/\\*[\\s\\S]*?(?:\\*/|$)|[\\s\\S])*?)(?:$|\\b${vars}\\b((?:(?:\\b(?:CONSTANT|RETAIN|PERSISTENT)\\b)?(?://.*(?:\\r?\\n|$)|(["'])(?:(?!\\4)(?:\\$\\4|[\\s\\S]))*(?:\\4|$)|\\(\\*[\\s\\S]*?(?:\\*\\)|$)|/\\*[\\s\\S]*?(?:\\*/|$)|[\\s])*?)*)((?://.*(?:\\r?\\n|$)|(["'])(?:(?!\\6)(?:\\$\\6|[\\s\\S]))*(?:\\6|$)|\\(\\*[\\s\\S]*?(?:\\*\\)|$)|/\\*[\\s\\S]*?(?:\\*/|$)|[\\s\\S])*?)(?:end_var|$)\\b)`, "i");
             let m = scope.match(regex);
-            if (m !== null) {
+            if (m && m[5] !== undefined) {
                 let ln2 = getLineNum(scope, m[0]);
-                symbols = listVariables(m[1], ln + ln2);
+                let symbols = listVariables(m[5], ln + ln2);
 
+                let range = getRange(getLineNum(doc, m[0]));
+                let child = new vscode.DocumentSymbol(vars, description, vscode.SymbolKind.File, range, range);
                 if (symbols.length > 0) {
-                    let range = getRange(getLineNum(doc, m[0]));
-                    let child = new vscode.DocumentSymbol(vars, description, vscode.SymbolKind.File, range, range);
                     child.children = symbols;
-                    return child;
                 }
-
+                return child;
             }
 
             return null;

@@ -269,15 +269,37 @@
 					]
 				},
 				{
-					"begin": "(?=\\bCASE\\b)",
-					"end": "(?<=END_CASE|END_PROGRAM|END_INTERFACE|END_FUNCTION_BLOCK|END_FUNCTION|END_METHOD|END_PROPERTY|END_ACTION)",
+					"begin": "\\bCASE\\b",
+					"end": "\\b(?:END_CASE\\b|(?=(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY|ACTION|TYPE)\\b))",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"include": "#keywords"
+								}
+							]
+						}
+					},
 					"name": "meta.switch.st",
 					"patterns": [
 						{
-							"include": "#comments"
-						},
-						{
-							"include": "#keywords"
+							"begin": "\\G(?!=\\b(?:OF\\b|END_CASE\\b|(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY|ACTION|TYPE)\\b))",
+							"end": "\\b(?:OF\\b|END_CASE\\b|(?=(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY|ACTION|TYPE)\\b))",
+							"captures": {
+								"0": {
+									"patterns": [
+										{
+											"include": "#keywords"
+										}
+									]
+								}
+							},
+							"contentName": "meta.switch.expression.st",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
 						},
 						{
 							"include": "$self"
@@ -352,7 +374,7 @@
 				},
 				{
 					"begin": "(?=\\bOF\\b|:(?!=))",
-					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|(?=:=|;)",
+					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|[\\S]",
 					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {
@@ -365,7 +387,7 @@
 					},
 					"patterns": [
 						{
-							"name": "keyword.other.st",
+							"name": "keyword.other.storage.st",
 							"match": "\\b(?:OF|TO|POINTER|REF(?:ERENCE)?|REF_TO)\\b"
 						},
 						{
@@ -376,7 +398,28 @@
 							"include": "#comments"
 						},
 						{
-							"include": "#meta"
+							"name": "meta.enumeration-definition.st",
+							"begin": "\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.parenthesis.begin.st"
+								}
+							},
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.parenthesis.end.st"
+								}
+							},
+							"patterns": [
+								{
+									"name": "entity.name.variable.enum-member.st",
+									"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
+								},
+								{
+									"include": "$self"
+								}
+							]
 						}
 					]
 				}
@@ -654,10 +697,6 @@
 				{
 					"name": "variable.other.readwrite.st",
 					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
-				},
-				{
-					"name": "entity.name.type.st",
-					"match": ":\\s*[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
 				}
 			]
 		},
@@ -678,6 +717,10 @@
 						}
 					},
 					"patterns": [
+						{
+							"name": "variable.parameter.st",
+							"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b(?=(?:\\/\\/.*(?:\\r?\\n|$)|([\"'])(?:(?!\\1)(?:\\$\\1|.))*(?:\\1|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?(?::=|=>|S=|R=))"
+						},
 						{
 							"include": "$self"
 						}

@@ -283,7 +283,7 @@
 					"name": "meta.switch.st",
 					"patterns": [
 						{
-							"begin": "\\G(?!=\\b(?:OF\\b|END_CASE\\b|(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY|ACTION|TYPE)\\b))",
+							"begin": "\\G",
 							"end": "\\b(?:OF\\b|END_CASE\\b|(?=(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY|ACTION|TYPE)\\b))",
 							"captures": {
 								"0": {

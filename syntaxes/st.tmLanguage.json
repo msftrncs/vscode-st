@@ -617,20 +617,22 @@
 					"match": "\\b(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|IMPLEMENTATION|METHOD|PROPERTY)\\b"
 				},
 				{
-					"captures": {
-						"1": {
-							"name": "storage.modifier.st"
-						},
-						"2": {
-							"name": "entity.other.inherited-class.st"
-						}
-					},
-					"match": "\\b(EXTENDS|IMPLEMENTS)\\b",
-					"comment": ",(?:\\s+([A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*))?\\b"
+					"name": "storage.modifier.st",
+					"match": "\\b(EXTENDS|IMPLEMENTS)\\b"
 				},
 				{
 					"name": "invalid.st",
 					"match": "#"
+				},
+				{
+					"comment": "invalid as identifiers",
+					"name": "invalid.reserved.keyword.st",
+					"match": "(?i)\\b(?:(?:(?:END_)?(?:IF|CASE)|(?:OF|ELSE|ELSIF|THEN))|(?:(?:END_)?(?:WHILE|FOR|REPEAT)|(?:DO|TO|BY|RETURN|EXIT|CONTINUE|UNTIL))|(?:OR(?:_ELSE|N)?|AND(?:_THEN|N)?|NOT|XORN?)|(?:ABS|MOD|ACOS|ASIN|ATAN|COS|EXP|EXPT|LN|LOG|SIN|SQRT|TAN|SEL|MUX|SHL|SHR|ROL|ROR|LIMIT|MAX|MIN|ADR(?:INST)?|SIZE(?:OF)?|INDEXOF|BIT_?ADR|TRUNC(?:_INT)?)|(?:POINTER|REF(?:ERENCE)?|REF_TO|AT|OVERLAP|TASK|WITH|USING|FROM)|(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?|END_VAR)|(?:(?:(BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME|L?TOD|L?DT|L?DATE|W?STRING)_)?TO_(?!\\1)\\g<1>)|(?:(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|METHOD|PROPERTY))|(?:(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR|ARRAY)\\b(?!#)))\\b"
+				},
+				{
+					"comment": "invalid as identifiers, from other 61131-3 languages",
+					"name": "invalid.reserved.keyword.st",
+					"match": "(?i)\\b(?:(?:CAL|JMP|RET)(?:CN?)?|INI|LDN?|MOVE|R|READ_(?:ONLY|WRITE)|S|STN?|GE|LE|EQ|NE|GT|LT|ADD|DIV|MUL|SUB)\\b"
 				}
 			]
 		},
@@ -669,16 +671,6 @@
 					"name": "variable.language.st"
 				},
 				{
-					"comment": "invalid as identifiers",
-					"name": "invalid.reserved.keyword.st",
-					"match": "(?i)\\b(?:(?:(?:END_)?(?:IF|CASE)|(?:OF|ELSE|ELSIF|THEN))|(?:(?:END_)?(?:WHILE|FOR|REPEAT)|(?:DO|TO|BY|RETURN|EXIT|CONTINUE|UNTIL))|(?:OR(?:_ELSE|N)?|AND(?:_THEN|N)?|NOT|XORN?)|(?:ABS|MOD|ACOS|ASIN|ATAN|COS|EXP|EXPT|LN|LOG|SIN|SQRT|TAN|SEL|MUX|SHL|SHR|ROL|ROR|LIMIT|MAX|MIN|ADR(?:INST)?|SIZE(?:OF)?|INDEXOF|BIT_?ADR|TRUNC(?:_INT)?)|(?:POINTER|REF(?:ERENCE)?|REF_TO|AT|OVERLAP|TASK|WITH|USING|FROM)|(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?|END_VAR)|(?:(?:(BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME|L?TOD|L?DT|L?DATE|W?STRING)_)?TO_(?!\\1)\\g<1>)|(?:(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|METHOD|PROPERTY))|(?:(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR|ARRAY)\\b(?!#)))\\b"
-				},
-				{
-					"comment": "invalid as identifiers, from other 61131-3 languages",
-					"name": "invalid.reserved.keyword.st",
-					"match": "(?i)\\b(?:(?:CAL|JMP|RET)(?:CN?)?|INI|LDN?|MOVE|R|READ_(?:ONLY|WRITE)|S|STN?|GE|LE|EQ|NE|GT|LT|ADD|DIV|MUL|SUB)\\b"
-				},
-				{
 					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\()(?!\\(\\*)",
 					"name": "variable.function.st"
 				},
@@ -697,6 +689,11 @@
 				{
 					"name": "variable.other.readwrite.st",
 					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
+				},
+				{
+					"comment": "Remaining indentifier must be invalid",
+					"name": "invalid.reserved.identifier.st",
+					"match": "\\b[A-Za-z_](?:[0-9A-Za-z_])*\\b"
 				}
 			]
 		},

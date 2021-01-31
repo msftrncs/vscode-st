@@ -1,8 +1,8 @@
 'use strict';
 import * as vscode from 'vscode';
 
-interface IPouBlockDesc { PouBlock: string, SymType: vscode.SymbolKind, Desc: string };
-interface IVarBlockDesc { varKeyword: string, desc: string };
+interface TPouBlockDesc { PouBlock: string, SymType: vscode.SymbolKind, Desc: string };
+interface TVarBlockDesc { varKeyword: string, desc: string };
 
 export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     /*
@@ -30,7 +30,7 @@ export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     */
 
     // a lookup for resolving the generically handled POU blocks in to Symbols
-    private PouBlocksList: IPouBlockDesc[] = [
+    private PouBlocksList: TPouBlockDesc[] = [
         { PouBlock: "PROGRAM", SymType: vscode.SymbolKind.Module, Desc: "Program" },
         { PouBlock: "FUNCTION", SymType: vscode.SymbolKind.Function, Desc: "Function" },
         { PouBlock: "FUNCTION_BLOCK", SymType: vscode.SymbolKind.Class, Desc: "Function block" },
@@ -40,7 +40,7 @@ export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     ]
 
     // a lookup for resolving the generically handled VAR blocks in to Symbols
-    private varBlocksList: IVarBlockDesc[] = [
+    private varBlocksList: TVarBlockDesc[] = [
         { varKeyword: 'VAR', desc: 'Local variables' },
         { varKeyword: 'VAR_TEMP', desc: 'Local variables' },
         { varKeyword: 'VAR_INPUT', desc: 'Input variables' },
@@ -103,7 +103,7 @@ export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                         let var_attr_constant = var_attr && var_attr[1].match(/(?:\/\/.*(?=\r?\n|$)|(["'])(?:(?!\1)(?:\$\1|[\s\S]))*(?:\1|$)|\(\*[\s\S]*?(?:\*\)|$)|\/\*[\s\S]*?(?:\*\/|$)|[\s\S])*?(?:$|\b(CONSTANT)\b)/iy) || null;
                         let isConstantVar = var_attr_constant && var_attr_constant[2] !== undefined || false;
                         const varSymbol = VarBlockDesc.find(varDes => varDes.varKeyword === pou_type)
-                            || { varKeyword: pou_type, desc: "<unknown>" } as IVarBlockDesc;
+                            || { varKeyword: pou_type, desc: "<unknown>" } as TVarBlockDesc;
                         let symbol = new vscode.DocumentSymbol(
                             pou_type, varSymbol.desc, vscode.SymbolKind.File, pou_full_range, pou_reveal_range);
                         const var_attr_offset = var_attr && var_attr[0] !== undefined ? var_attr[0].length : 0;
@@ -120,7 +120,7 @@ export class STDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
                         */
                         let pou_name = pous[5].match(rgx_pou_name);
                         const pouBlockSymbol = PouBlockDesc.find(blockDes => blockDes.PouBlock === pou_type)
-                            || { PouBlock: pou_type, SymType: vscode.SymbolKind.Null, Desc: "<unknown>" } as IPouBlockDesc;
+                            || { PouBlock: pou_type, SymType: vscode.SymbolKind.Null, Desc: "<unknown>" } as TPouBlockDesc;
                         let symbol = new vscode.DocumentSymbol(
                             checkUnnamedItem(pou_name && pou_name[3] || undefined), pouBlockSymbol.Desc,
                             pouBlockSymbol.SymType,

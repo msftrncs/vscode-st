@@ -2,8 +2,8 @@
 { Attribute: pragma; }
 PROGRAM PLC_PRG
     VAR
-        sDoubleQuoted: STRING    := "test\tmething";
-        sSingleQuoted: STRING    := 'Another WHILE \n\r string';
+        sDoubleQuoted: STRING    := "test$tmething";
+        sSingleQuoted: STRING    := 'Another WHILE $n$r string';
         xStart AT %IX0.0.1: BOOL := TRUE;
         rTest: REAL := 12.3e4; (* dsfsfsdfs sd fsdf  *)
         iTest: INT  := 1234;

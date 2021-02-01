@@ -16,7 +16,7 @@ PROGRAM PLC_PRG
         fbTon2: TON;
     END_VAR
 
-    TON(IN := TRUE, PT := T#2s, Q => xOut);
+    TON(IN := TRUE, PT := T#2s, Q /* q yes? */=> xOut);
     actionTest(DS, T#2s);
 
     // TODO: Single line comment

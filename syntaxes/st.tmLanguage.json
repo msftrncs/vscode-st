@@ -18,13 +18,13 @@
 			"include": "#meta"
 		},
 		{
+			"include": "#numbers"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
 			"include": "#primitives"
-		},
-		{
-			"include": "#numbers"
 		},
 		{
 			"include": "#variables"
@@ -457,12 +457,10 @@
 						},
 						"2": {
 							"name": "keyword.other.st"
-						},
-						"3": {
-							"name": "constant.numeric.float.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+\\.\\d+([eE][\\-+]?\\d+)?)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+\\.\\d+([eE][\\-+]?\\d+)?)\\b",
+					"name": "constant.numeric.float.st"
 				},
 				{
 					"captures": {
@@ -471,12 +469,10 @@
 						},
 						"2": {
 							"name": "keyword.other.st"
-						},
-						"3": {
-							"name": "constant.numeric.binary.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(2#[0-1_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(2#[0-1_]+)\\b",
+					"name": "constant.numeric.binary.st"
 				},
 				{
 					"captures": {
@@ -485,12 +481,10 @@
 						},
 						"2": {
 							"name": "keyword.other.st"
-						},
-						"3": {
-							"name": "constant.numeric.octal.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|)?(8#[0-7_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|)?(8#(?:[0-7]_?){1,22})",
+					"name": "constant.numeric.octal.st"
 				},
 				{
 					"captures": {
@@ -499,12 +493,10 @@
 						},
 						"2": {
 							"name": "keyword.other.st"
-						},
-						"3": {
-							"name": "constant.numeric.hex.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(16#[0-9A-Fa-f_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?16#(?:[0-9A-Fa-f]_?){1,16}",
+					"name": "constant.numeric.hexidecimal.st"
 				},
 				{
 					"captures": {
@@ -518,7 +510,8 @@
 							"name": "constant.numeric.integer.st"
 						}
 					},
-					"match": "(\\b(?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+)\\b"
+					"match": "(\\b(?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+)",
+					"name": "constant.numeric.integer.st"
 				},
 				{
 					"name": "constant.numeric.duration.st",
@@ -625,9 +618,13 @@
 					"match": "\\b(EXTENDS|IMPLEMENTS)\\b"
 				},
 				{
+					"name": "support.function.st",
+					"match": "\\bTIME\\b(?=(?:\\/\\/.*(?:\\r?\\n|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?\\((?!\\*))"
+				},
+				{
 					"comment": "invalid as identifiers",
 					"name": "invalid.reserved.keyword.st",
-					"match": "(?i)\\b(?:(?:(?:END_)?(?:IF|CASE)|(?:OF|ELSE|ELSIF|THEN))|(?:(?:END_)?(?:WHILE|FOR|REPEAT)|(?:DO|TO|BY|RETURN|EXIT|CONTINUE|UNTIL))|(?:OR(?:_ELSE|N)?|AND(?:_THEN|N)?|NOT|XORN?)|(?:ABS|MOD|ACOS|ASIN|ATAN|COS|EXP|EXPT|LN|LOG|SIN|SQRT|TAN|SEL|MUX|SHL|SHR|ROL|ROR|LIMIT|MAX|MIN|ADR(?:INST)?|SIZE(?:OF)?|INDEXOF|BIT_?ADR|TRUNC(?:_INT)?)|(?:POINTER|REF(?:ERENCE)?|REF_TO|AT|OVERLAP|TASK|WITH|USING|FROM)|(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?|END_VAR)|(?:(?:(BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME|L?TOD|L?DT|L?DATE|W?STRING)_)?TO_(?!\\1)\\g<1>)|(?:(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|METHOD|PROPERTY))|(?:(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR|ARRAY)\\b(?!#)))\\b"
+					"match": "(?i)\\b(?:(?:(?:END_)?(?:IF|CASE)|(?:OF|ELSE|ELSIF|THEN))|(?:(?:END_)?(?:WHILE|FOR|REPEAT)|(?:DO|TO|BY|RETURN|EXIT|CONTINUE|UNTIL))|(?:OR(?:_ELSE|N)?|AND(?:_THEN|N)?|NOT|XORN?)|(?:ABS|MOD|ACOS|ASIN|ATAN|COS|EXP|EXPT|LN|LOG|SIN|SQRT|TAN|SEL|MUX|SHL|SHR|ROL|ROR|LIMIT|MAX|MIN|ADR(?:INST)?|SIZE(?:OF)?|INDEXOF|BIT_?ADR|TRUNC(?:_INT)?)|(?:POINTER|REF(?:ERENCE)?|REF_TO|AT|OVERLAP|TASK|WITH|USING|FROM)|(?:ABSTRACT|CONSTANT|RETAIN|PERSISTENT|PUBLIC|PRIVATE|PROTECTED|INTERNAL|FINAL)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL|CONFIG))?|END_VAR)|(?:(?:(BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME|L?TOD|L?DT|L?DATE|W?STRING)_)?TO_(?!\\1)\\g<1>)|(?:(?:END_)?(?:PROGRAM|CONFIGURATION|TCP|RESOURCE|LIBRARY|FOLDER|BINARIES|INCLUDES|SOURCES|ACTION|(?:INITIAL_)?STEP|TRANSITION|TYPE|STRUCT|UNION|FUNCTION(?:_BLOCK)?|NAMESPACE|INTERFACE|METHOD|PROPERTY))|(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR|ARRAY))\\b"
 				},
 				{
 					"comment": "invalid as identifiers, from other 61131-3 languages",
@@ -675,16 +672,16 @@
 					"name": "variable.language.st"
 				},
 				{
-					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\()(?!\\(\\*)",
+					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=(?:\\/\\/.*(?:\\r?\\n|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?\\((?!\\*))",
 					"name": "variable.function.st"
 				},
 				{
 					"name": "variable.other.object.st",
-					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.(?!\\.))"
+					"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=(?:\\/\\/.*(?:\\r?\\n|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?\\.(?!\\.))"
 				},
 				{
 					"name": "variable.other.object.property.st",
-					"match": "(?<=\\.)(?<!\\.\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=\\.(?!\\.))"
+					"match": "(?<=\\.)(?<!\\.\\.)[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*(?=(?:\\/\\/.*(?:\\r?\\n|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?\\.(?!\\.))"
 				},
 				{
 					"name": "variable.other.property.st",
@@ -793,8 +790,8 @@
 			"end": "\\*\\)",
 			"patterns": [
 				{
-					"name": "constant.character.escape.st",
-					"match": "\\\\."
+					"comment": "for support of nested comments",
+					"include": "#comment_st"
 				}
 			]
 		},

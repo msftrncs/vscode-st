@@ -462,7 +462,7 @@
 							"name": "constant.numeric.float.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|(?<!#))(-?\\d+\\.\\d+([eE][\\-+]?\\d+)?)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+\\.\\d+([eE][\\-+]?\\d+)?)\\b"
 				},
 				{
 					"captures": {
@@ -476,7 +476,7 @@
 							"name": "constant.numeric.binary.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|(?<!#))(2#[0-1_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(2#[0-1_]+)\\b"
 				},
 				{
 					"captures": {
@@ -490,7 +490,7 @@
 							"name": "constant.numeric.octal.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|(?<!#))(8#[0-7_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|)?(8#[0-7_]+)\\b"
 				},
 				{
 					"captures": {
@@ -504,7 +504,7 @@
 							"name": "constant.numeric.hex.st"
 						}
 					},
-					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|(?<!#))(16#[0-9A-Fa-f_]+)\\b"
+					"match": "\\b((?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(16#[0-9A-Fa-f_]+)\\b"
 				},
 				{
 					"captures": {
@@ -518,7 +518,7 @@
 							"name": "constant.numeric.integer.st"
 						}
 					},
-					"match": "(\\b(?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#)|(?<!#))(-?\\d+)\\b"
+					"match": "(\\b(?:BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL)(#))?(-?\\d+)\\b"
 				},
 				{
 					"name": "constant.numeric.duration.st",
@@ -543,6 +543,10 @@
 				{
 					"name": "invalid.constant.st",
 					"match": "\\b(?i:TOD|TIME_OF_DAY|D(?:ATE)?|DT|DATE_AND_TIME|L?TIME|T)#"
+				},
+				{
+					"name": "invalid.unrecognized.constant.st",
+					"match": "(?:\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)?#"
 				}
 			]
 		},
@@ -619,10 +623,6 @@
 				{
 					"name": "storage.modifier.st",
 					"match": "\\b(EXTENDS|IMPLEMENTS)\\b"
-				},
-				{
-					"name": "invalid.st",
-					"match": "#"
 				},
 				{
 					"comment": "invalid as identifiers",
@@ -720,7 +720,7 @@
 					"patterns": [
 						{
 							"name": "variable.parameter.st",
-							"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b(?=(?:\\/\\/.*(?:\\r?\\n|$)|([\"'])(?:(?!\\1)(?:\\$\\1|.))*(?:\\1|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?(?::=|=>|S=|R=))"
+							"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b(?=(?:\\/\\/.*(?:\\r?\\n|$)|\\(\\*.*?(?:\\*\\)|$)|\\/\\*.*?(?:\\*\\/|$)|\\s)*?(?::=|=>|S=|R=))"
 						},
 						{
 							"include": "$self"

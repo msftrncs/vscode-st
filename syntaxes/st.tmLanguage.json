@@ -121,7 +121,7 @@
 						}
 					},
 					"begin": "\\b(PROGRAM|ACTION)\\b",
-					"end": "(?<=END_\\1|END_INTERFACE|END_FUNCTION_BLOCK|END_PROGRAM)",
+					"end": "(?<=END_\\1)|\\b(?=(?:(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
 					"name": "meta.function.st",
 					"patterns": [
 						{
@@ -257,7 +257,7 @@
 						}
 					},
 					"begin": "\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)\\b",
-					"end": "(?<=\\bEND_VAR)|(?=\\bEND_(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY)|\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?))\\b",
+					"end": "(?<=\\bEND_VAR)|\\b(?=(?:(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?))\\b)",
 					"name": "meta.declaration.$0.st",
 					"patterns": [
 						{
@@ -374,7 +374,7 @@
 				},
 				{
 					"begin": "(?=\\bOF\\b|:(?!=))",
-					"end": "\\b(?:(?=(?:END_)?TYPE|STRUCT|UNION)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*)\\b|[\\S]",
+					"end": "\\b(?:(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b)|[\\S]",
 					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {
@@ -405,9 +405,9 @@
 									"name": "punctuation.parenthesis.begin.st"
 								}
 							},
-							"end": "\\)",
+							"end": "(\\))|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
 							"endCaptures": {
-								"0": {
+								"1": {
 									"name": "punctuation.parenthesis.end.st"
 								}
 							},

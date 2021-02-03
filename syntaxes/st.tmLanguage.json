@@ -802,7 +802,18 @@
 		},
 		"strings_dq": {
 			"name": "string.quoted.double.st",
-			"begin": "\"",
+			"begin": "(?:(W?(?:STRING|CHAR))(#))?\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.st"
+				},
+				"1": {
+					"name": "support.type.primitives.st"
+				},
+				"2": {
+					"name": "keyword.other.st"
+				}
+			},
 			"end": "\"",
 			"patterns": [
 				{
@@ -821,7 +832,18 @@
 		},
 		"strings_sq": {
 			"name": "string.quoted.single.st",
-			"begin": "'",
+			"begin": "(?:(W?(?:STRING|CHAR))(#))?'",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.st"
+				},
+				"1": {
+					"name": "support.type.primitives.st"
+				},
+				"2": {
+					"name": "keyword.other.st"
+				}
+			},
 			"end": "'",
 			"patterns": [
 				{

@@ -373,53 +373,90 @@
 					]
 				},
 				{
-					"begin": "(?=\\bOF\\b|:(?!=))",
-					"end": "\\b(?:(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b)|[\\S]",
-					"applyEndPatternLast": true,
-					"endCaptures": {
+					"begin": ":(?!=)",
+					"beginCaptures": {
 						"0": {
-							"patterns": [
-								{
-									"include": "#type_name"
-								}
-							]
+							"name": "punctuation.separator.st"
 						}
 					},
+					"end": "(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+					"aapplyEndPatternLast": true,
+					"contentName": "meta.variable.type.declaration",
 					"patterns": [
 						{
-							"name": "keyword.other.storage.st",
-							"match": "\\b(?:OF|TO|POINTER|REF(?:ERENCE)?|REF_TO)\\b"
-						},
-						{
-							"name": "punctuation.separator.st",
-							"match": ":(?!=)"
-						},
-						{
-							"include": "#comments"
-						},
-						{
-							"name": "meta.enumeration-definition.st",
-							"begin": "\\(",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.parenthesis.begin.st"
-								}
-							},
-							"end": "(\\))|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+							"xbegin": "(?=\\bOF\\b|:(?!=))",
+							"begin": "\\G",
+							"end": "(?:\\b(?:(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b))|[\\S]",
+							"applyEndPatternLast": true,
 							"endCaptures": {
-								"1": {
-									"name": "punctuation.parenthesis.end.st"
+								"0": {
+									"patterns": [
+										{
+											"include": "#type_name"
+										}
+									]
 								}
 							},
 							"patterns": [
 								{
-									"name": "entity.name.variable.enum-member.st",
-									"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
+									"name": "keyword.other.storage.st",
+									"match": "\\b(?:ARRAY|OF|TO|POINTER|REF(?:ERENCE)?|REF_TO)\\b"
 								},
 								{
-									"include": "$self"
+									"name": "invalid.illegal.separator.st",
+									"match": ":(?!=)"
+								},
+								{
+									"include": "#comments"
+								},
+								{
+									"name": "meta.enumeration-definition.st",
+									"begin": "\\(",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.parenthesis.begin.st"
+										}
+									},
+									"end": "(\\))|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+									"endCaptures": {
+										"1": {
+											"name": "punctuation.parenthesis.end.st"
+										}
+									},
+									"patterns": [
+										{
+											"name": "entity.name.variable.enum-member.st",
+											"match": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b"
+										},
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"name": "meta.index.st",
+									"begin": "\\[",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.bracket.begin.st"
+										}
+									},
+									"end": "]|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.bracket.end.st"
+										}
+									},
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
 								}
 							]
+						},
+						{
+							"include": "$self"
 						}
 					]
 				}
@@ -708,7 +745,7 @@
 							"name": "punctuation.parenthesis.begin.st"
 						}
 					},
-					"end": "\\)",
+					"end": "\\)|(?=;)",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.parenthesis.end.st"
@@ -732,7 +769,7 @@
 							"name": "punctuation.bracket.begin.st"
 						}
 					},
-					"end": "\\]",
+					"end": "]|(?=;)",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.bracket.end.st"

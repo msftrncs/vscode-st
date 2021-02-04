@@ -197,7 +197,7 @@
 						}
 					},
 					"begin": "\\b(TYPE)\\b",
-					"end": "(?<=\\bEND_\\1)",
+					"end": "(?<=\\bEND_\\1)|\\b(?=(?:(?:END_)?(?:VAR|PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD|PROPERTY)|(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL)))\\b)",
 					"name": "meta.type.st",
 					"patterns": [
 						{
@@ -213,7 +213,7 @@
 								}
 							},
 							"begin": "\\b[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b",
-							"end": "(?<=\\bEND_(?:TYPE|STRUCT|UNION)|;)",
+							"end": "(?<=\\bEND_(?:TYPE|STRUCT|UNION)|;)|\\b(?=(?:(?:END_)?(?:VAR|PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD|PROPERTY)|(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL)))\\b)",
 							"patterns": [
 								{
 									"include": "#type_declaration"
@@ -232,22 +232,7 @@
 					]
 				},
 				{
-					"beginCaptures": {
-						"0": {
-							"name": "keyword.other.struct.st"
-						}
-					},
-					"begin": "\\b(STRUCT|UNION)\\b",
-					"end": "(?<=\\bEND_\\1)|(?=\\bEND_TYPE\\b)",
-					"name": "meta.struct.st",
-					"patterns": [
-						{
-							"include": "#type_declaration"
-						},
-						{
-							"include": "$self"
-						}
-					]
+					"include": "#struct_union"
 				},
 				{
 					"comment": "VAR_x CANNOT be nested, so lookbehind is used to detect END",
@@ -257,7 +242,7 @@
 						}
 					},
 					"begin": "\\b(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?)\\b",
-					"end": "(?<=\\bEND_VAR)|\\b(?=(?:(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|METHOD|PROPERTY)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?))\\b)",
+					"end": "(?<=\\bEND_VAR)|\\b(?=(?:(?:END_)?(?:PROGRAM|INTERFACE|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD|PROPERTY)|(?:VAR(?:_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))?))\\b)",
 					"name": "meta.declaration.$0.st",
 					"patterns": [
 						{
@@ -305,6 +290,24 @@
 							"include": "$self"
 						}
 					]
+				}
+			]
+		},
+		"struct_union": {
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.other.struct.st"
+				}
+			},
+			"begin": "\\b(STRUCT|UNION)\\b",
+			"end": "(?<=\\bEND_\\1)|(?=\\bEND_TYPE\\b)",
+			"name": "meta.struct.st",
+			"patterns": [
+				{
+					"include": "#type_declaration"
+				},
+				{
+					"include": "$self"
 				}
 			]
 		},
@@ -379,14 +382,14 @@
 							"name": "punctuation.separator.st"
 						}
 					},
-					"end": "(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+					"end": "(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD))\\b)",
 					"aapplyEndPatternLast": true,
 					"contentName": "meta.variable.type.declaration",
 					"patterns": [
 						{
 							"xbegin": "(?=\\bOF\\b|:(?!=))",
 							"begin": "\\G",
-							"end": "(?:\\b(?:(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b))|[\\S]",
+							"end": "(?:\\b(?:(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD))\\b)|[A-Za-z_](?:[0-9A-Za-z]|(?<!_)_)*\\b))|[\\S]",
 							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
@@ -399,8 +402,8 @@
 							},
 							"patterns": [
 								{
-									"name": "keyword.other.storage.st",
-									"match": "\\b(?:ARRAY|OF|TO|POINTER|REF(?:ERENCE)?|REF_TO)\\b"
+									"name": "storage.modifier.st",
+									"match": "\\b(?:ARRAY|OF|TO|POINTER|REFERENCE|REF_TO)\\b"
 								},
 								{
 									"name": "invalid.illegal.separator.st",
@@ -410,6 +413,9 @@
 									"include": "#comments"
 								},
 								{
+									"include": "#struct_union"
+								},
+								{
 									"name": "meta.enumeration-definition.st",
 									"begin": "\\(",
 									"beginCaptures": {
@@ -417,7 +423,7 @@
 											"name": "punctuation.parenthesis.begin.st"
 										}
 									},
-									"end": "(\\))|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+									"end": "(\\))|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD))\\b)",
 									"endCaptures": {
 										"1": {
 											"name": "punctuation.parenthesis.end.st"
@@ -441,7 +447,7 @@
 											"name": "punctuation.bracket.begin.st"
 										}
 									},
-									"end": "]|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE))\\b)",
+									"end": "]|(?=;)|\\b(?=(?:(?:VAR_(?:INPUT|OUTPUT|IN_OUT|INST|TEMP|STAT|GLOBAL|ACCESS|EXTERNAL))|(?:END_)?(?:VAR|PROGRAM|FUNCTION(?:_BLOCK)?|TYPE|ACTION|METHOD))\\b)",
 									"endCaptures": {
 										"0": {
 											"name": "punctuation.bracket.end.st"
@@ -674,7 +680,7 @@
 			"patterns": [
 				{
 					"name": "support.type.primitives.st",
-					"match": "\\b(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR|ARRAY)\\b(?!#)"
+					"match": "\\b(?:ANY|BIT|BOOL|BYTE|[DL]?WORD|U?[SDL]?INT|L?REAL|L?TIME(?:_OF_DAY)?|L?TOD|L?DT|L?DATE(?:_AND_TIME)?|W?STRING|W?CHAR)\\b(?!#)"
 				}
 			]
 		},

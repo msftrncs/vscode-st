@@ -21,7 +21,6 @@
 		["{", "}"],
 		["[", "]"],
 		["(", ")"],
-		["(*", "*)"],
 		["\"", "\""],
         ["'", "'"],
     ],
@@ -35,7 +34,7 @@
 	
 	,
 	"indentationRules": {
-		"increaseIndentPattern": "(\\(|\\[|\\(\\*|/\\*|(ELSE|THEN|ELSIF|DO|BY|OF|(?<!END_)REPEAT|(?<!END_)VAR).*)$",
+		"increaseIndentPattern": "(\\(|\\[|\\(\\*|/\\*|\\b(ELSE\\b|THEN\\b|ELSIF\\b|DO\\b|BY\\b|OF\\b|REPEAT\\b|VAR).*)$",
 		"decreaseIndentPattern": "^\\s*(\\)|\\]|\\*/|\\*\\)|\\b(ELSE|ELSIF|UNTIL|(END_(IF|FOR|WHILE|CASE|VAR)))\\b)"
 	},
 
